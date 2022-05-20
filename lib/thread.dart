@@ -24,11 +24,11 @@ class IsolateThread {
   final _emitSignal = AsyncSignal(locked: true);
   bool get running => !_emitSignal.locked;
 
-  IsolateThread(this.eventHandler, { this.keepEmitsWhileNotRunning = true, bool start = true }) {
+  IsolateThread(this.eventHandler, { bool start = true, this.keepEmitsWhileNotRunning = true }) {
     if (start) this.start();
   }
 
-  IsolateThread.empty({ this.keepEmitsWhileNotRunning = true, bool start = true }) :
+  IsolateThread.empty({ bool start = true, this.keepEmitsWhileNotRunning = true }) :
     eventHandler = ((emitter) {})
   {
     if (start) this.start();
@@ -58,10 +58,10 @@ class IsolateThread {
     final emitter = ThreadEventEmitter(receivePort, initialState.sendPort);
     initialState.eventHandler(emitter);
 
-    emitter.onAny((event) async {
+    emitter.onAny((event) {
       final message = event.message;
       if (message is ThreadComputeRequest) {
-        emitter.emit(event.topic, await message.callback(message.data));
+        message.compute(event.topic, emitter);
       }
     });
 
@@ -76,21 +76,21 @@ class IsolateThread {
     emitter?.emit(topic, data);
   }
 
-  void stop({ int priority = Isolate.immediate }) {
-    isolate?.kill(priority: priority);
-    isolate = null;
-    _emitSignal.lock();
-  }
-
   Future<ReturnType> compute<ReturnType>(ReturnType Function() callback) {
     return computeWith(null, (void data) => callback());
   }
 
-  Future<ReturnType> computeWith<EntryType, ReturnType>(EntryType data, ReturnType Function(dynamic data) callback) async {
+  Future<ReturnType> computeWith<EntryType, ReturnType>(EntryType data, ReturnType Function(EntryType data) callback) async {
     final uuid = _uuid.v4();
     final result = Completer<ReturnType>();
     once(uuid, (ReturnType data) => result.complete(data));
     emit(uuid, ThreadComputeRequest(data, callback));
     return result.future;
+  }
+
+  void stop({ int priority = Isolate.immediate }) {
+    isolate?.kill(priority: priority);
+    isolate = null;
+    _emitSignal.lock();
   }
 }

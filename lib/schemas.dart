@@ -7,8 +7,13 @@ class ThreadInitialState {
   const ThreadInitialState(this.sendPort, this.eventHandler);
 }
 
-class ThreadComputeRequest<ReturnType> {
-  final dynamic data;
-  final ReturnType Function(dynamic data) callback;
+class ThreadComputeRequest<EntryType, ReturnType> {
+  final EntryType data;
+  final ReturnType Function(EntryType data) callback;
   ThreadComputeRequest(this.data, this.callback);
+
+  void compute(String topic, EventEmitter emitter) async {
+    // ignore: await_only_futures
+    emitter.emit(topic, await callback(data)); // The warning is wrong, the callback can be async/Future, it still needs `await`.
+  }
 }

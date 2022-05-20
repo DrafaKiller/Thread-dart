@@ -1,10 +1,8 @@
 # Thread
 
-A simple Isolated Thread wrapped with a type-safe Event Emitter for easier communication.
+A simple Isolated Thread wrapped with a type-safe Event Emitter for easier asynchronous communication.
 
-## Features
-
-* ...
+Setup events for the thread to reply to, or compute tasks individually.
 
 ## Getting started
 
@@ -20,7 +18,63 @@ import 'package:thread/thread.dart';
 
 ## Usage
 
-... 
+Setup a thread along with a function that will be running with it.
+```dart
+final thread = IsolateThread((emitter) {
+    ...
+});
+
+// Create a thread with no initial function
+final thread = IsolateThread.empty();
+```
+
+Inside the function, use the given Event Emitter to communicate.
+```dart
+final thread = IsolateThread((emitter) {
+    emitter.on('do this', (String data) {
+        emitter.emit('done', '[Computed] $data');
+    });
+});
+```
+
+Listen for the result outside the thread and send a signal whenever you need it.
+```dart
+thread.on('done', (String data) {
+    print(data);
+});
+
+thread.emit('do this', 'Hello World');
+
+// [Output]
+// [Computed] Hello World
+```
+
+There are also signals to compute tasks individually with no setup needed. These tasks can be asynchronous.
+```dart
+// Send a single task for the thread to run
+print(await thread.compute(() => '[Computed] Hello World'));
+
+// Compute a task along some input dat
+print(await thread.computeWith('Hello World', (String data) {
+    return '[Computed] $data';
+}));
+
+// [Output]
+// [Computed] Hello World
+```
+
+The thread starts automatically when you create it, the emitted events will be handled by the thread after started. But you can also start it manually.
+```dart
+final thread = IsolateThread((emitter) {
+    ...
+}, start: false, keepEmitsWhileNotRunning: false);
+
+await thread.start();
+
+thread.emit( ... );
+```
+
+Stop the thread by using `thread.stop()` or `emitter.emit('end', true)`, you can start another isolated thread with the same object by using `thread.start()`, but only if the thread is not already running.
 
 ## GitHub
 
@@ -37,18 +91,15 @@ final thread = IsolateThread((emitter) {
 });
 
 thread.on('result', (String data) => print(data));
-await thread.start();
 
 thread.emit('compute', 'Hello world!');
-thread.emit('compute', 'This is a test message');
 thread.emit('compute', 'Wow!');
 
 print(await thread.compute(() => 'Hello world!'));
-print(await thread.compute(123, (data) => 'Wow $data'));
+print(await thread.computeWith(123, (int data) => 'Wow $data'));
 
 // [Output]
 // [Computed] Hello world!
-// [Computed] This is a test message
 // [Computed] Wow!
 
 // Hello world!
