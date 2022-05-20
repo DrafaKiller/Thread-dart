@@ -19,7 +19,7 @@ part 'schemas.dart';
 /// ## Usage
 /// 
 /// ```dart
-/// final thread = IsolateThread((emitter) {
+/// final thread = Thread((emitter) {
 ///     emitter.on('compute', (String data) async {
 ///         await Future.delayed(const Duration(seconds: 1));
 ///         emitter.emit('result', '[Computed] $data');
@@ -34,7 +34,7 @@ part 'schemas.dart';
 /// print(await thread.compute(() => 'Hello world!'));
 /// print(await thread.computeWith(123, (int data) => 'Wow $data'));
 /// ```
-class IsolateThread {
+class Thread {
   final _threadEmitter = EventEmitter();
   Isolate? isolate;
   /// Preserve events if the thread is not running with [keepEmitsWhileNotRunning]
@@ -57,12 +57,12 @@ class IsolateThread {
   /// 
   /// * Start the thread automatically or manually with [start]
   /// * Preserve events if the thread is not running with [keepEmitsWhileNotRunning]
-  IsolateThread(this.eventHandler, { bool start = true, this.keepEmitsWhileNotRunning = true }) {
+  Thread(this.eventHandler, { bool start = true, this.keepEmitsWhileNotRunning = true }) {
     if (start) this.start();
   }
 
   /// Create a thread with no initial function
-  IsolateThread.empty({ bool start = true, this.keepEmitsWhileNotRunning = true }) :
+  Thread.empty({ bool start = true, this.keepEmitsWhileNotRunning = true }) :
     eventHandler = ((emitter) {})
   {
     if (start) this.start();

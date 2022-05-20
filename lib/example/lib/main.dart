@@ -1,7 +1,7 @@
 import 'package:thread/thread.dart';
 
 void main() async {
-  final thread = IsolateThread((emitter) {
+  final thread = Thread((emitter) {
     emitter.on('compute', (String data) async {
         await Future.delayed(const Duration(seconds: 1));
         emitter.emit('result', '[Computed] $data');

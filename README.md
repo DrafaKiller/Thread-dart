@@ -20,18 +20,19 @@ import 'package:thread/thread.dart';
 
 Setup a thread along with a function that will be running with it.
 ```dart
-final thread = IsolateThread((emitter) {
+final thread = Thread((emitter) {
     ...
 });
 
 // Create a thread with no initial function
-final thread = IsolateThread.empty();
+final thread = Thread.empty();
 ```
 
 Inside the function, use the given Event Emitter to communicate.
 ```dart
-final thread = IsolateThread((emitter) {
-    emitter.on('do this', (String data) {
+final thread = Thread((emitter) {
+    emitter.on('do this', (String data) async {
+        /// ...
         emitter.emit('done', '[Computed] $data');
     });
 });
@@ -65,7 +66,7 @@ print(await thread.computeWith('Hello World', (String data) {
 
 The thread starts automatically when you create it, the emitted events will be handled by the thread after started. But you can also start it manually.
 ```dart
-final thread = IsolateThread((emitter) {
+final thread = Thread((emitter) {
     ...
 }, start: false, keepEmitsWhileNotRunning: false);
 
@@ -83,7 +84,7 @@ The package code is available on Github: [Dart - Thread](https://github.com/Draf
 ## Example
 
 ```dart
-final thread = IsolateThread((emitter) {
+final thread = Thread((emitter) {
     emitter.on('compute', (String data) async {
         await Future.delayed(const Duration(seconds: 1));
         emitter.emit('result', '[Computed] $data');
