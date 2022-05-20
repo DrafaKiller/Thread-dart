@@ -10,9 +10,34 @@ import 'package:uuid/uuid.dart';
 part 'thread_event_emitter.dart';
 part 'schemas.dart';
 
+/// # Isolate Thread
+/// 
+/// A simple Isolated Thread wrapped with a type-safe Event Emitter for easier asynchronous communication.
+/// 
+/// Setup events for the thread to reply to, or compute tasks individually.
+/// 
+/// ## Usage
+/// 
+/// ```dart
+/// final thread = IsolateThread((emitter) {
+///     emitter.on('compute', (String data) async {
+///         await Future.delayed(const Duration(seconds: 1));
+///         emitter.emit('result', '[Computed] $data');
+///     });
+/// });
+/// 
+/// thread.on('result', (String data) => print(data));
+/// 
+/// thread.emit('compute', 'Hello world!');
+/// thread.emit('compute', 'Wow!');
+/// 
+/// print(await thread.compute(() => 'Hello world!'));
+/// print(await thread.computeWith(123, (int data) => 'Wow $data'));
+/// ```
 class IsolateThread {
   final _threadEmitter = EventEmitter();
   Isolate? isolate;
+  /// Preserve events if the thread is not running with [keepEmitsWhileNotRunning]
   final bool keepEmitsWhileNotRunning;
   final _uuid = const Uuid();
 
@@ -24,16 +49,28 @@ class IsolateThread {
   final _emitSignal = AsyncSignal(locked: true);
   bool get running => !_emitSignal.locked;
 
+  /// # Isolate Thread
+  /// 
+  /// A simple Isolated Thread wrapped with a type-safe Event Emitter for easier asynchronous communication.
+  /// 
+  /// Setup events for the thread to reply to, or compute tasks individually.
+  /// 
+  /// * Start the thread automatically or manually with [start]
+  /// * Preserve events if the thread is not running with [keepEmitsWhileNotRunning]
   IsolateThread(this.eventHandler, { bool start = true, this.keepEmitsWhileNotRunning = true }) {
     if (start) this.start();
   }
 
+  /// Create a thread with no initial function
   IsolateThread.empty({ bool start = true, this.keepEmitsWhileNotRunning = true }) :
     eventHandler = ((emitter) {})
   {
     if (start) this.start();
   }
   
+  /// Starts the thread.
+  /// 
+  /// If the thread is already running, this is ignored.
   Future<void> start() async {
     if (running) return;
 
@@ -68,18 +105,28 @@ class IsolateThread {
     await emitter.untilEnd();
   }
 
+  /// Listen to events from the thread.
   EventListener on<MessageType>(String topic, void Function(MessageType data) callback) => _threadEmitter.on(topic, callback);
+
+  /// Listen to the next event from the thread once.
   Future<MessageType> once<MessageType>(String topic, void Function(MessageType data) callback) => _threadEmitter.once(topic, callback);
   
+  /// Emit an event to the thread.
   void emit<MessageType>(String topic, MessageType data) async {
     if (keepEmitsWhileNotRunning) await _emitSignal.wait();
     emitter?.emit(topic, data);
   }
 
+  /// Sends a task to the thread to be computed.
+  /// 
+  /// Reply with the result by returning, can be `async`.
   Future<ReturnType> compute<ReturnType>(ReturnType Function() callback) {
     return computeWith(null, (void data) => callback());
   }
 
+  /// Sends the task and data to the thread to be computed.
+  /// 
+  /// Reply with the result by returning, can be `async`.
   Future<ReturnType> computeWith<EntryType, ReturnType>(EntryType data, ReturnType Function(EntryType data) callback) async {
     final uuid = _uuid.v4();
     final result = Completer<ReturnType>();
@@ -88,6 +135,11 @@ class IsolateThread {
     return result.future;
   }
 
+  /// Stops the thread as soon as it can.
+  /// 
+  /// The same can be achieved by using `emitter.emit('end', true)`.
+  /// 
+  /// After this the thread can be started again, it will start as a new thread but on this same object.
   void stop({ int priority = Isolate.immediate }) {
     isolate?.kill(priority: priority);
     isolate = null;
