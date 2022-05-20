@@ -74,16 +74,13 @@ class Thread {
   Future<void> start() async {
     if (running) return;
 
-    final initialState = ThreadInitialState(receivePort.sendPort, eventHandler);
-    isolate = await Isolate.spawn(_onEntryPoint, initialState);
+    isolate = await Isolate.spawn(_onEntryPoint, ThreadInitialState(receivePort.sendPort, eventHandler));
 
     final receiveStream = receivePort.asBroadcastStream();   
-
-    final data = await receiveStream.first;
-    if (data is SendPort) {
-      emitter = ThreadEventEmitter(receivePort, data, receiveStream: receiveStream);
-      emitter!.onAny((event) => _threadEmitter.emit(event.topic, event.message));
-      
+    final sendPort = await receiveStream.first;
+    if (sendPort is SendPort) {
+      emitter = ThreadEventEmitter(receivePort, sendPort, receiveStream: receiveStream);
+      emitter!.onAny((dynamic event) => _threadEmitter.emitEvent(event));
       _emitSignal.unlock();
     }
   }
@@ -94,22 +91,19 @@ class Thread {
     
     final emitter = ThreadEventEmitter(receivePort, initialState.sendPort);
     initialState.eventHandler(emitter);
-
-    emitter.onAny((event) {
-      final message = event.message;
-      if (message is ThreadComputeRequest) {
-        message.compute(event.topic, emitter);
-      }
-    });
+    emitter.onAny<ThreadComputeRequest>((event) => event.message.compute(event.topic, emitter));
 
     await emitter.untilEnd();
   }
 
+  /// Listen to any event emitted by the thread.
+  StreamSubscription<Event<MessageType>> onAny<MessageType>(void Function(Event<MessageType> event) callback) => _threadEmitter.onAny<MessageType>(callback);  
+
   /// Listen to events from the thread.
-  EventListener on<MessageType>(String topic, void Function(MessageType data) callback) => _threadEmitter.on(topic, callback);
+  EventListener<MessageType> on<MessageType>(String topic, void Function(MessageType data) callback) => _threadEmitter.on<MessageType>(topic, callback);
 
   /// Listen to the next event from the thread once.
-  Future<MessageType> once<MessageType>(String topic, void Function(MessageType data) callback) => _threadEmitter.once(topic, callback);
+  Future<MessageType> once<MessageType>(String topic, void Function(MessageType data) callback) => _threadEmitter.once<MessageType>(topic, callback);
   
   /// Emit an event to the thread.
   void emit<MessageType>(String topic, MessageType data) async {

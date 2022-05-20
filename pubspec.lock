@@ -35,7 +35,7 @@ packages:
       name: events_emitter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.5+2"
+    version: "0.1.0"
   flutter:
     dependency: transitive
     description: flutter
@@ -55,6 +55,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.27.3"
   sky_engine:
     dependency: transitive
     description: flutter

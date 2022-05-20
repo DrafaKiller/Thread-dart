@@ -10,17 +10,16 @@ class ThreadEventEmitter extends EventEmitter {
     receiveStream = receiveStream ?? receivePort.asBroadcastStream()
   {
     this.receiveStream.listen((event) {
-      if (event is Event) super.emit(event.topic, event.message);
+      if (event is Event) super.emitEvent(event);
     });
   }
 
   @override
   void emit<MessageType>(String topic, MessageType data) {
     if (topic == 'end' && data is bool) {
-      super.emit(topic, data);
-    } else {
-      sendPort.send(Event(topic, data));
+      super.emit<MessageType>(topic, data);
     }
+    sendPort.send(Event<MessageType>(topic, data));
   }
 
   Future<void> untilEnd() async {
