@@ -2,7 +2,7 @@ part of thread;
 
 class ThreadInitialState {
   final SendPort sendPort;
-  final void Function(EventEmitter emitter) eventHandler;
+  final void Function(EventEmitter emitter)? eventHandler;
 
   const ThreadInitialState(this.sendPort, this.eventHandler);
 }

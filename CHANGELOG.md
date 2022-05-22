@@ -1,4 +1,10 @@
+## 0.0.3
+
+* Changed: Optional `eventEmitter` in `Thread`
+* Fixed: Wrong event `type`, in some cases
+
 ## 0.0.2
+
 * Changed: Renamed `IsolatedThread` class to `Thread`
 
 ## 0.0.1

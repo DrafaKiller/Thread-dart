@@ -44,7 +44,7 @@ class Thread {
   final ReceivePort receivePort = ReceivePort();
   ThreadEventEmitter? emitter;
 
-  final void Function(EventEmitter emitter) eventHandler;
+  final void Function(EventEmitter emitter)? eventHandler;
 
   final _emitSignal = AsyncSignal(locked: true);
   bool get running => !_emitSignal.locked;
@@ -62,9 +62,7 @@ class Thread {
   }
 
   /// Create a thread with no initial function
-  Thread.empty({ bool start = true, this.keepEmitsWhileNotRunning = true }) :
-    eventHandler = ((emitter) {})
-  {
+  Thread.empty({ bool start = true, this.keepEmitsWhileNotRunning = true }) : eventHandler = null {
     if (start) this.start();
   }
   
@@ -90,7 +88,7 @@ class Thread {
     initialState.sendPort.send(receivePort.sendPort);
     
     final emitter = ThreadEventEmitter(receivePort, initialState.sendPort);
-    initialState.eventHandler(emitter);
+    if (initialState.eventHandler != null) initialState.eventHandler!(emitter);
     emitter.onAny<ThreadComputeRequest>((event) => event.message.compute(event.topic, emitter));
 
     await emitter.untilEnd();
