@@ -13,7 +13,10 @@ class ThreadComputeRequest<EntryType, ReturnType> {
   ThreadComputeRequest(this.data, this.callback);
 
   void compute(String topic, EventEmitter emitter) async {
-    // ignore: await_only_futures
-    emitter.emit(topic, await callback(data)); // The warning is wrong, the callback can be async/Future, it still needs `await`.
+    emitter.emit(topic,
+      // The warning is wrong, the callback can be async/Future, it still needs `await`, it will not work if it doesn't.
+      // ignore: await_only_futures
+      await callback(data)
+    );
   }
 }
