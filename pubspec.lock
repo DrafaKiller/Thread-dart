@@ -7,14 +7,7 @@ packages:
       name: async_signal
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1"
-  characters:
-    dependency: transitive
-    description:
-      name: characters
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.2.0"
+    version: "0.0.3"
   collection:
     dependency: transitive
     description:
@@ -35,26 +28,7 @@ packages:
       name: events_emitter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0"
-  flutter:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
-  material_color_utilities:
-    dependency: transitive
-    description:
-      name: material_color_utilities
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.4"
-  meta:
-    dependency: transitive
-    description:
-      name: meta
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.7.0"
+    version: "0.3.0"
   rxdart:
     dependency: transitive
     description:
@@ -62,11 +36,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.27.3"
-  sky_engine:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.99"
   typed_data:
     dependency: transitive
     description:
@@ -81,13 +50,5 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.6"
-  vector_math:
-    dependency: transitive
-    description:
-      name: vector_math
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.2"
 sdks:
   dart: ">=2.17.0 <3.0.0"
-  flutter: ">=1.17.0"
