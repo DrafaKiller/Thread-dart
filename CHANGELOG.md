@@ -1,3 +1,7 @@
+## 0.1.2
+
+* Fixed: `events_emitter` now returns a listener instead of a subscription
+
 ## 0.1.1
 
 * Changed: `events_emitter` and `async_signal` dependency versions to lastest

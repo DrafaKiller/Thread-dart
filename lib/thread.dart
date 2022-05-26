@@ -95,7 +95,7 @@ class Thread {
   }
 
   /// Listen to any event emitted by the thread.
-  StreamSubscription<Event<MessageType>> onAny<MessageType>(void Function(Event<MessageType> event) callback) => _threadEmitter.onAny<MessageType>(callback);  
+  EventListener<Event<MessageType>> onAny<MessageType>(void Function(Event<MessageType> event) callback) => _threadEmitter.onAny<MessageType>(callback);  
 
   /// Listen to events from the thread.
   EventListener<MessageType> on<MessageType>(String topic, void Function(MessageType data) callback) => _threadEmitter.on<MessageType>(topic, callback);
