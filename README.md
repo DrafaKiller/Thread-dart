@@ -1,3 +1,6 @@
+[![Pub.dev package](https://img.shields.io/badge/pub.dev-thread-blue)](https://pub.dev/packages/thread)
+[![GitHub repository](https://img.shields.io/badge/GitHub-Thread--dart-blue?logo=github)](https://github.com/DrafaKiller/Thread-dart)
+
 # Thread
 
 A simple Isolated Thread wrapped with a type-safe Event Emitter for easier asynchronous communication.
@@ -8,7 +11,7 @@ Setup events for the thread to reply to, or compute tasks individually.
 
 Install it using pub:
 ```
-flutter pub add thread
+dart pub add thread
 ```
 
 And import the package:

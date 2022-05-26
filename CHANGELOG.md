@@ -1,3 +1,8 @@
+## 0.1.0
+
+* Added: `shields.io` badges in documentation
+* Removed: `flutter` from package dependency
+
 ## 0.0.3
 
 * Changed: Optional `eventEmitter` in `Thread`
