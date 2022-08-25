@@ -23,7 +23,10 @@ Fixed:
 **`[!]`** Removed:
 - `keepEmitsWhileNotRunning` from **Thread** class, now it always preserves the emits
 
+BREAKING CHANGES:
 > The Thread was partially **refactored**, and updated to use the new version of the `events_emitter` dependency. Although it's essentially the same, be aware the way events work might have changed, depending on your case.
+> 
+> Changes: **`[!]`**
 
 ## 0.1.2
 
