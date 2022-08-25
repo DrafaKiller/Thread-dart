@@ -15,20 +15,17 @@ class ThreadEventEmitter extends EventEmitter {
   }
 
   @override
-  void emit<MessageType>(String topic, MessageType data) {
-    if (topic == 'end' && data is bool) {
-      super.emit<MessageType>(topic, data);
-    }
-    sendPort.send(Event<MessageType>(topic, data));
+  bool emit<T>(String type, T data) {
+    if (type == 'end' && data is bool) super.emit<T>(type, data);
+    sendPort.send(Event<T>(type, data));
+    return true;
   }
 
   Future<void> untilEnd() async {
     final until = Completer();
-
     on('end', (bool exit) {
       if (exit) until.complete();
     });
-
     await until.future;
   }
 }
