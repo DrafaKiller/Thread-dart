@@ -25,7 +25,6 @@ Fixed:
 
 > The Thread was partially **refactored**, and updated to use the new version of the `events_emitter` dependency. Although it's essentially the same, be aware the way events work might have changed, depending on your case.
 
-
 ## 0.1.2
 
 Fixed:

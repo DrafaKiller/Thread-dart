@@ -1,7 +1,8 @@
 name: thread
 description: A simple Isolated Thread wrapped with a type-safe Event Emitter for easier asynchronous communication. Setup events for the thread to reply to, or compute tasks individually.
 version: 0.2.0
-homepage: https://github.com/DrafaKiller/Thread-dart
+repository: https://github.com/DrafaKiller/Thread-dart
+issue_tracker: https://github.com/DrafaKiller/Thread-dart/issues
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
