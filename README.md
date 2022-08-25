@@ -80,7 +80,7 @@ print(await thread.computeWith('Hello World', (String data) {
 // <Computed> Hello World
 ```
 
-### Controlling a Thread
+## Controlling a Thread
 
 Threads start automatically when you create them, the emitted events will be handled by the thread after starting.
 
@@ -99,7 +99,7 @@ Start another isolated thread with the same object by using `thread.start()`, bu
 
 A Thread execution can also be paused and resumed, using `thread.pause()` and `thread.resume()`.
 
-### Addtional Methods
+## Addtional Methods
 
 A temporary thread can be started with `Thread.Compute` and `Thread.ComputeWith` to compute a single task and return the result.
 
