@@ -245,7 +245,7 @@ class Thread {
   /// Emits an event to be sent to the thread.
   /// 
   /// If the thread is not alive, this will wait until it is.
-  Future<void> emit<T>(String type, T data) async {
+  Future<void> emit<T>(String type, [ T? data ]) async {
     await untilAlive();
     events!.emit(type, data);
   }

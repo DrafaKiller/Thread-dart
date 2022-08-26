@@ -15,9 +15,13 @@ class ThreadEventEmitter extends EventEmitter {
   }
 
   @override
-  bool emit<T>(String type, T data) {
+  bool emit<T>(String type, [ T? data ]) {
     if (type == 'end' && data is bool) super.emit<T>(type, data);
-    sendPort.send(Event<T>(type, data));
+    if (data != null) {
+      sendPort.send(Event<T>(type, data));
+    } else {
+      sendPort.send(Event(type, null));
+    }
     return true;
   }
 

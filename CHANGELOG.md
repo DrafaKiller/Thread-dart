@@ -1,3 +1,8 @@
+## 0.2.1
+
+Fixed:
+- **Thread** `.emit()` is optional, updated because of `events_emitter` dependency
+
 ## 0.2.0
 
 Added:
