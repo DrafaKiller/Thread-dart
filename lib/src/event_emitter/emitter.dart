@@ -1,4 +1,7 @@
-part of thread;
+import 'dart:async';
+import 'dart:isolate';
+
+import 'package:events_emitter/events_emitter.dart';
 
 class ThreadEventEmitter extends EventEmitter {
   final ReceivePort receivePort;
@@ -15,13 +18,9 @@ class ThreadEventEmitter extends EventEmitter {
   }
 
   @override
-  bool emit<T>(String type, [ T? data ]) {
-    if (type == 'end' && data is bool) super.emit<T>(type, data);
-    if (data != null) {
-      sendPort.send(Event<T>(type, data));
-    } else {
-      sendPort.send(Event(type, null));
-    }
+  bool emitEvent<T extends Event>(T event) {
+    if (event.type == 'end' && event.data is bool) super.emitEvent<T>(event);
+    sendPort.send(event);
     return true;
   }
 

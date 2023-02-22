@@ -1,4 +1,3 @@
-library thread;
+library thread_event_emitter;
 
 export 'src/event_emitter/emitter.dart';
-export 'src/thread.dart';

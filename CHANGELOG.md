@@ -1,9 +1,26 @@
+## 0.2.2
+
+Minor BREAKING CHANGES:
+> The file structure was reorganized, might cause some issues with imports
+
+Added:
+- `.initialized` accessor, to check if the thread is initialized, meaning alive and ready to emit and receive events
+
+Fixed:
+- Method `.untilAlive()` was skipping the future ahead of time, causing null check operators to throw an exception. [Issue #1](https://github.com/DrafaKiller/Thread-dart/issues/1)
+- Strange behavior with `.compute()` and `.computeWith()` methods, Dart wasn't handling the `Future` correctly and was getting stuck. [Issue #2](https://github.com/DrafaKiller/Thread-dart/issues/2)
+
 ## 0.2.1
 
 Fixed:
 - **Thread** `.emit()` data is optional, updated because of `events_emitter` dependency
 
 ## 0.2.0
+
+BREAKING CHANGES:
+> The Thread was partially **refactored**, and updated to use the new version of the `events_emitter` dependency. Although it's essentially the same, be aware the way events work might have changed, depending on your case.
+> 
+> Changes: **`[!]`**
 
 Added:
 - `pause` and `resume` methods, to allow pausing and resuming the execution of the thread. This is the same as doing `thread.isolate.pause()`.
@@ -27,11 +44,6 @@ Fixed:
 
 **`[!]`** Removed:
 - `keepEmitsWhileNotRunning` from **Thread** class, now it always preserves the emits
-
-BREAKING CHANGES:
-> The Thread was partially **refactored**, and updated to use the new version of the `events_emitter` dependency. Although it's essentially the same, be aware the way events work might have changed, depending on your case.
-> 
-> Changes: **`[!]`**
 
 ## 0.1.2
 
