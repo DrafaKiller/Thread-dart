@@ -14,7 +14,6 @@ const uuid = Uuid();
 
 class Thread {
   Isolate? isolate;
-
   final EventHandler? _eventHandler;
 
   final _signal = AsyncSignal(locked: true);
@@ -31,6 +30,7 @@ class Thread {
   final _deadListeners = <EventListener>[];
   
   bool get alive => isolate != null;
+  bool get initialized => alive && events != null;
   
   /// ## Thread
   /// 
@@ -90,9 +90,9 @@ class Thread {
     if (alive) return;
     final receivePort = ReceivePort();
     isolate = await Isolate.spawn(
-      debugName: 'ThreadIsolate-${uuid.v4()}',
-      _entryPoint,
+      _entryPoint, 
       ThreadInitialState(receivePort.sendPort, _eventHandler),
+      debugName: 'ThreadIsolate-${uuid.v4()}',
     );
 
     final receiveStream = receivePort.asBroadcastStream();
@@ -137,7 +137,7 @@ class Thread {
   /// 
   /// Used to wait for the thread to start.
   FutureOr<void> untilAlive() async {
-    if (alive) return;
+    if (initialized) return;
     await _signal.wait();
   }
 
@@ -146,7 +146,7 @@ class Thread {
   /// Sends a compute request to the thread, with a task be to executed in the thread.
   /// 
   /// The returned result will be sent back, this task can be asynchronous.
-  Future<ReturnT> compute<ReturnT>(ReturnT Function() computation) {
+  Future<ReturnT> compute<ReturnT>(EmptyComputeCallback<ReturnT> computation) {
     return computeWith(null, (void data) => computation());
   }
 

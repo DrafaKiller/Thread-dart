@@ -1,7 +1,7 @@
 part of '../thread.dart';
 
-typedef ComputeCallback<EntryT, ReturnT> = ReturnT Function(EntryT data);
-typedef EmptyComputeCallback<ReturnT> = ReturnT Function();
+typedef ComputeCallback<EntryT, ReturnT> = FutureOr<ReturnT> Function(EntryT data);
+typedef EmptyComputeCallback<ReturnT> = FutureOr<ReturnT> Function();
 
 class ThreadComputeRequest<EntryT, ReturnT> extends Event<EntryT> {
   final ComputeCallback<EntryT, ReturnT> computation;
