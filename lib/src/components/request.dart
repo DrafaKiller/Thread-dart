@@ -4,8 +4,8 @@ typedef ComputeCallback<EntryT, ReturnT> = FutureOr<ReturnT> Function(EntryT dat
 typedef EmptyComputeCallback<ReturnT> = FutureOr<ReturnT> Function();
 
 class ThreadComputeRequest<EntryT, ReturnT> extends Event<EntryT> {
-  final ComputeCallback<EntryT, ReturnT> computation;
   ThreadComputeRequest(super.type, super.data, this.computation);
 
+  final ComputeCallback<EntryT, ReturnT> computation;
   Future<void> compute(String topic, EventEmitter events) async => events.emit(topic, await computation(data));
 }
